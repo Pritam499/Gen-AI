@@ -1,0 +1,127 @@
+# Mumbai Munchies: The Canteen Chronicle - Ruby Edition
+
+# Initialize the snack inventory as an empty array
+@snack_inventory = []
+@sales_records = []
+
+# Helper method to find a snack by ID
+def find_snack_by_id(id)
+  @snack_inventory.find { |snack| snack[:id] == id }
+end
+
+# Method to add a snack to the inventory
+def add_snack
+  print 'Enter Snack ID: '
+  id = gets.chomp
+  print 'Enter Snack Name: '
+  name = gets.chomp
+  print 'Enter Snack Price: '
+  price = gets.chomp.to_f
+  print 'Is the snack available? (Yes/No): '
+  availability = gets.chomp.downcase == 'yes'
+
+  if find_snack_by_id(id).nil?
+    @snack_inventory << { id: id, name: name, price: price, availability: availability }
+    puts "#{name} has been added to the inventory."
+  else
+    puts 'A snack with this ID already exists!'
+  end
+end
+
+# Method to remove a snack from the inventory
+def remove_snack
+  print 'Enter the Snack ID to remove: '
+  id = gets.chomp
+  snack = find_snack_by_id(id)
+
+  if snack
+    @snack_inventory.delete(snack)
+    puts "#{snack[:name]} has been removed from the inventory."
+  else
+    puts "Snack with ID #{id} not found."
+  end
+end
+
+# Method to update snack availability
+def update_availability
+  print 'Enter the Snack ID to update availability: '
+  id = gets.chomp
+  snack = find_snack_by_id(id)
+
+  if snack
+    print 'Is the snack available? (Yes/No): '
+    snack[:availability] = gets.chomp.downcase == 'yes'
+    puts "#{snack[:name]} availability updated to #{snack[:availability] ? 'Yes' : 'No'}."
+  else
+    puts "Snack with ID #{id} not found."
+  end
+end
+
+# Method to record a sale
+def record_sale
+  print 'Enter the Snack ID of the item sold: '
+  id = gets.chomp
+  snack = find_snack_by_id(id)
+
+  if snack && snack[:availability]
+    @sales_records << { id: id, name: snack[:name], price: snack[:price] }
+    puts "#{snack[:name]} has been sold for #{snack[:price]}."
+  else
+    puts snack ? 'Snack is currently unavailable.' : "Snack with ID #{id} not found."
+  end
+end
+
+# Method to display the inventory
+def display_inventory
+  puts 'Current Inventory:'
+  @snack_inventory.each do |snack|
+    puts "ID: #{snack[:id]}, Name: #{snack[:name]}, Price: #{snack[:price]}, Available: #{snack[:availability] ? 'Yes' : 'No'}"
+  end
+end
+
+# Method to display the sales records
+def display_sales
+  puts 'Sales Records:'
+  @sales_records.each do |sale|
+    puts "Snack Sold: #{sale[:name]}, Price: #{sale[:price]}"
+  end
+end
+
+# Main loop to interact with the user
+def main
+  loop do
+    puts "\nMumbai Munchies: The Canteen Chronicle"
+    puts '1. Add a Snack'
+    puts '2. Remove a Snack'
+    puts '3. Update Snack Availability'
+    puts '4. Record a Sale'
+    puts '5. Display Inventory'
+    puts '6. Display Sales Records'
+    puts '7. Exit'
+    print 'Choose an option: '
+    choice = gets.chomp.to_i
+
+    case choice
+    when 1
+      add_snack
+    when 2
+      remove_snack
+    when 3
+      update_availability
+    when 4
+      record_sale
+    when 5
+      display_inventory
+    when 6
+      display_sales
+    when 7
+      puts 'Exiting the program. Goodbye!'
+      break
+    else
+      puts 'Invalid choice, please try again.'
+    end
+  end
+end
+
+# Run the main loop
+main
